@@ -1,0 +1,1298 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080e1b">
+  <meta name="description" content="Управляемое резервное копирование для бизнеса: 1С, документы, серверы, NAS и виртуальные машины. Ежедневные копии, мониторинг и помощь с восстановлением.">
+  <title>Резерв. — Резервное копирование для бизнеса</title>
+
+  <style>
+    :root {
+      --bg: #080e1b;
+      --bg2: #0e1728;
+      --card: #111d30;
+      --line: #27354a;
+      --text: #f3f7ff;
+      --muted: #9aa9be;
+      --accent: #8cf3bf;
+      --accent2: #5ed8d0;
+      --dark: #071b17;
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font-family: Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Arial, sans-serif;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea {
+      font: inherit;
+    }
+    button { cursor: pointer; }
+    :focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 4px;
+    }
+    ::selection {
+      background: var(--accent);
+      color: var(--dark);
+    }
+    .container {
+      width: min(1160px, calc(100% - 40px));
+      margin: auto;
+    }
+    .section { padding: 95px 0; }
+    .eyebrow {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      font-size: clamp(43px, 6vw, 76px);
+      line-height: 1.08;
+      letter-spacing: -3px;
+      margin: 22px 0;
+    }
+    h2 {
+      font-size: clamp(32px, 4vw, 48px);
+      line-height: 1.15;
+      letter-spacing: -1.6px;
+      margin: 14px 0 20px;
+    }
+    h3 {
+      font-size: 21px;
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+    p { color: var(--muted); }
+    .lead {
+      font-size: 18px;
+      max-width: 640px;
+    }
+    .gradient-text {
+      background: linear-gradient(110deg, var(--accent), var(--accent2));
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 50px;
+      padding: 12px 23px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      font-weight: 750;
+      transition: transform .2s, background .2s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      color: #082018;
+      background: var(--accent);
+    }
+    .btn-primary:hover { background: #b0ffd8; }
+    .btn-outline {
+      border-color: #405169;
+      background: transparent;
+      color: var(--text);
+    }
+    .btn-outline:hover { background: #17263a; }
+    .btn-block { width: 100%; }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    /* Шапка */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(8,14,27,.91);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .nav {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 23px;
+      font-weight: 850;
+      letter-spacing: -1px;
+      white-space: nowrap;
+    }
+    .logo-mark {
+      display: grid;
+      place-items: center;
+      width: 37px;
+      height: 37px;
+      border-radius: 11px;
+      color: var(--dark);
+      background: var(--accent);
+      font-size: 23px;
+      font-weight: 900;
+    }
+    .nav-links {
+      display: flex;
+      gap: 29px;
+      align-items: center;
+    }
+    .nav-links a {
+      font-size: 14px;
+      color: #b8c5d5;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* Первый экран */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 100px 0 105px;
+      background:
+        radial-gradient(ellipse at 78% 25%, #143f40 0, transparent 42%),
+        radial-gradient(ellipse at 20% 0%, #172b4b 0, transparent 40%);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 65px;
+      align-items: center;
+    }
+    .hero p { max-width: 570px; }
+    .hero-note {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 35px;
+      color: #b8c9d7;
+      font-size: 13px;
+    }
+    .hero-note span::before {
+      content: "✓";
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: 900;
+    }
+
+    /* Демонстрационная панель */
+    .dashboard {
+      position: relative;
+      padding: 22px;
+      border: 1px solid #344d5c;
+      border-radius: 24px;
+      background: linear-gradient(145deg, #162c3b, #0d1829 70%);
+      box-shadow: 0 35px 100px rgba(0,0,0,.3);
+    }
+    .dashboard::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      z-index: -1;
+      border-radius: 24px;
+      background: linear-gradient(130deg, #65e4b5, transparent 55%);
+      filter: blur(15px);
+      opacity: .22;
+    }
+    .dash-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .dash-title { font-weight: 750; }
+    .dash-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .pill {
+      padding: 5px 11px;
+      border-radius: 100px;
+      background: rgba(140,243,191,.1);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 750;
+    }
+    .dash-stat {
+      padding: 28px 0 22px;
+    }
+    .dash-stat strong {
+      display: block;
+      font-size: 43px;
+      line-height: 1.1;
+      letter-spacing: -2px;
+    }
+    .dash-stat small { color: var(--muted); }
+    .progress {
+      height: 8px;
+      border-radius: 20px;
+      background: #293a4c;
+      overflow: hidden;
+      margin: 14px 0 25px;
+    }
+    .progress span {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+    }
+    .backup-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
+    }
+    .backup-row strong {
+      display: block;
+      font-size: 14px;
+    }
+    .backup-row small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .backup-row .status {
+      color: var(--accent);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .dash-foot {
+      margin-top: 15px;
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+    }
+
+    /* Секции */
+    .section-head {
+      max-width: 720px;
+      margin-bottom: 43px;
+    }
+    .section-head p { font-size: 17px; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .card {
+      padding: 29px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--card);
+    }
+    .card p { font-size: 15px; }
+    .card-icon {
+      display: grid;
+      place-items: center;
+      width: 49px;
+      height: 49px;
+      margin-bottom: 23px;
+      border-radius: 14px;
+      background: rgba(140,243,191,.1);
+      color: var(--accent);
+      font-size: 25px;
+    }
+    .alt {
+      background: #0c1525;
+      border-top: 1px solid rgba(255,255,255,.04);
+      border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+
+    /* Как это работает */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .step {
+      padding: 26px;
+      border-left: 1px solid #34465a;
+    }
+    .step-number {
+      color: var(--accent);
+      font-size: 34px;
+      font-weight: 850;
+      letter-spacing: -1px;
+      margin-bottom: 18px;
+    }
+    .step p { font-size: 14px; }
+
+    /* Тарифы */
+    .pricing {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+    .plan {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 32px 27px;
+      border: 1px solid #304156;
+      border-radius: 23px;
+      background: #101b2c;
+    }
+    .plan.featured {
+      border: 2px solid var(--accent);
+      background: linear-gradient(180deg, #17362f, #111e2c 42%);
+    }
+    .plan-badge {
+      position: absolute;
+      top: -15px;
+      right: 22px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      background: var(--accent);
+      color: var(--dark);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .plan-name {
+      font-size: 20px;
+      font-weight: 800;
+    }
+    .plan-desc {
+      min-height: 50px;
+      font-size: 14px;
+    }
+    .price {
+      margin: 20px 0 3px;
+      font-size: clamp(30px, 3vw, 39px);
+      font-weight: 850;
+      letter-spacing: -1.5px;
+    }
+    .price span {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0;
+    }
+    .setup {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 25px;
+    }
+    .plan ul {
+      list-style: none;
+      padding: 22px 0;
+      margin: 0 0 25px;
+      border-top: 1px solid var(--line);
+      flex: 1;
+    }
+    .plan li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 13px;
+      font-size: 14px;
+      color: #d3ddea;
+    }
+    .plan li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 850;
+    }
+    .pricing-note {
+      max-width: 780px;
+      margin: 23px auto 0;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    /* Кому подходит */
+    .use-cases {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+    .use-case {
+      padding: 24px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: #111c2c;
+    }
+    .use-case .symbol {
+      font-size: 30px;
+      margin-bottom: 16px;
+    }
+    .use-case h3 { font-size: 17px; }
+    .use-case p {
+      font-size: 13px;
+      margin: 0;
+    }
+
+    /* FAQ */
+    .faq {
+      max-width: 850px;
+      margin: auto;
+    }
+    details {
+      border-bottom: 1px solid var(--line);
+      padding: 20px 0;
+    }
+    summary {
+      position: relative;
+      padding-right: 30px;
+      cursor: pointer;
+      list-style: none;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after {
+      content: "+";
+      position: absolute;
+      right: 3px;
+      top: 0;
+      color: var(--accent);
+      font-size: 23px;
+      font-weight: 400;
+    }
+    details[open] summary::after { content: "−"; }
+    details p {
+      margin: 15px 0 0;
+      font-size: 15px;
+    }
+
+    /* Форма */
+    .contact-wrap {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      gap: 65px;
+      align-items: start;
+    }
+    .contact-box {
+      padding: 32px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: #111d2f;
+    }
+    .field { margin-bottom: 17px; }
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 13px 15px;
+      color: var(--text);
+      background: #0a1322;
+      border: 1px solid #35465a;
+      border-radius: 10px;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+    }
+    input::placeholder, textarea::placeholder {
+      color: #75849a;
+    }
+    textarea {
+      min-height: 105px;
+      resize: vertical;
+    }
+    .form-note {
+      margin: 14px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    #form-status {
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--accent);
+    }
+    #request-preview {
+      margin-top: 12px;
+      min-height: 155px;
+    }
+    [hidden] { display: none !important; }
+
+    /* Подвал */
+    footer {
+      padding: 35px 0;
+      border-top: 1px solid var(--line);
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .footer-inner p {
+      margin: 0;
+      font-size: 12px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .footer-links a:hover { color: var(--accent); }
+
+    @media (max-width: 1000px) {
+      .hero-grid { gap: 30px; }
+      .steps, .use-cases {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .contact-wrap { gap: 30px; }
+    }
+
+    @media (max-width: 760px) {
+      .container { width: min(100% - 30px, 560px); }
+      .section { padding: 65px 0; }
+      .nav { min-height: 68px; }
+      .nav-links { display: none; }
+      .nav .btn { padding: 10px 13px; font-size: 12px; }
+      .hero { padding: 65px 0; }
+      .hero-grid,
+      .cards,
+      .pricing,
+      .contact-wrap {
+        grid-template-columns: 1fr;
+      }
+      h1 { letter-spacing: -2px; }
+      .hero .lead { font-size: 16px; }
+      .dashboard { margin-top: 15px; }
+      .plan-desc { min-height: auto; }
+      .steps, .use-cases {
+        grid-template-columns: 1fr 1fr;
+      }
+      .step { padding: 18px; }
+      .contact-box { padding: 23px; }
+    }
+
+    @media (max-width: 430px) {
+      .steps, .use-cases { grid-template-columns: 1fr; }
+      .actions .btn { width: 100%; }
+      .logo { font-size: 19px; }
+      .logo-mark { width: 32px; height: 32px; }
+      .footer-inner { align-items: flex-start; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container nav">
+      <!-- Рабочее название. Замени на своё -->
+      <a class="logo" href="#top" aria-label="Резерв. Главная">
+        <span class="logo-mark">↻</span>
+        Резерв.
+      </a>
+
+      <nav class="nav-links" aria-label="Навигация">
+        <a href="#advantages">Преимущества</a>
+        <a href="#how">Как работаем</a>
+        <a href="#pricing">Тарифы</a>
+        <a href="#faq">Вопросы</a>
+      </nav>
+
+      <a class="btn btn-primary" href="#contact">
+        Оставить заявку
+      </a>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">
+            Управляемые бэкапы для бизнеса
+          </div>
+
+          <h1>
+            Ваши данные.<br>
+            <span class="gradient-text">
+              Под контролем.
+            </span>
+          </h1>
+
+          <p class="lead">
+            Настроим резервное копирование 1С, документов,
+            серверов и NAS. Следим за выполнением копий,
+            замечаем ошибки и помогаем восстановить данные,
+            когда это действительно нужно.
+          </p>
+
+          <div class="actions">
+            <a class="btn btn-primary" href="#pricing">
+              Смотреть тарифы →
+            </a>
+            <a class="btn btn-outline" href="#how">
+              Как это работает
+            </a>
+          </div>
+
+          <div class="hero-note">
+            <span>Ежедневные копии</span>
+            <span>Мониторинг ошибок</span>
+            <span>Помощь с восстановлением</span>
+          </div>
+        </div>
+
+        <!-- Иллюстрация, не реальные данные -->
+        <div class="dashboard" aria-label="Пример отчёта о резервном копировании">
+          <div class="dash-top">
+            <div>
+              <div class="dash-title">Backup Monitor</div>
+              <div class="dash-subtitle">Пример панели контроля</div>
+            </div>
+            <span class="pill">● Система работает</span>
+          </div>
+
+          <div class="dash-stat">
+            <small>Последняя проверка</small>
+            <strong>3 из 3</strong>
+            <small>Задачи выполнены успешно</small>
+          </div>
+
+          <div class="progress"><span></span></div>
+
+          <div class="backup-row">
+            <div>
+              <strong>База 1С</strong>
+              <small>Ежедневная резервная копия</small>
+            </div>
+            <span class="status">✓ Готово</span>
+          </div>
+
+          <div class="backup-row">
+            <div>
+              <strong>Рабочие документы</strong>
+              <small>Инкрементальная копия</small>
+            </div>
+            <span class="status">✓ Готово</span>
+          </div>
+
+          <div class="backup-row">
+            <div>
+              <strong>Внешняя копия</strong>
+              <small>Независимое хранилище</small>
+            </div>
+            <span class="status">✓ Готово</span>
+          </div>
+
+          <div class="dash-foot">
+            Демонстрационный пример, не данные клиента
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ПРЕИМУЩЕСТВА -->
+    <section class="section" id="advantages">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Зачем нужен сервис</div>
+          <h2>Бэкап должен работать.<br>А не просто существовать.</h2>
+          <p>
+            Недостаточно однажды настроить копирование.
+            Важно вовремя узнать о сбое и убедиться,
+            что из копии действительно можно вернуть данные.
+          </p>
+        </div>
+
+        <div class="cards">
+          <article class="card">
+            <div class="card-icon">↻</div>
+            <h3>Регулярные копии</h3>
+            <p>
+              Настраиваем автоматическое копирование по расписанию.
+              Храним историю версий согласно выбранному тарифу.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">◎</div>
+            <h3>Контроль выполнения</h3>
+            <p>
+              Отслеживаем результат заданий и разбираемся
+              с ошибками. Не оставляем незаметно сломанный бэкап.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">⇧</div>
+            <h3>Помощь с восстановлением</h3>
+            <p>
+              Помогаем вернуть удалённый файл, базу данных
+              или сервер в пределах согласованного объёма услуг.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ПРОЦЕСС -->
+    <section class="section alt" id="how">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Как мы работаем</div>
+          <h2>Четыре шага к спокойствию</h2>
+          <p>
+            Берём на себя техническую сторону резервного
+            копирования, чтобы вы могли заниматься бизнесом.
+          </p>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">01</div>
+            <h3>Разбираемся</h3>
+            <p>
+              Смотрим, какие данные важны, где они находятся
+              и как быстро их потребуется восстанавливать.
+            </p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">02</div>
+            <h3>Настраиваем</h3>
+            <p>
+              Подбираем схему, подключаем шифрование,
+              расписание и резервное хранилище.
+            </p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">03</div>
+            <h3>Следим</h3>
+            <p>
+              Проверяем выполнение задач, реагируем на ошибки
+              и контролируем состояние копий.
+            </p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">04</div>
+            <h3>Восстанавливаем</h3>
+            <p>
+              Проверяем восстановление по условиям тарифа
+              и помогаем при потере данных.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ТАРИФЫ -->
+    <section class="section" id="pricing">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Тарифы</div>
+          <h2>Понятная стоимость.<br>Без лишних услуг.</h2>
+          <p>
+            Вы платите за настройку, хранение, мониторинг
+            и сопровождение резервных копий.
+          </p>
+        </div>
+
+        <div class="pricing">
+          <article class="plan">
+            <div class="plan-name">Backup Basic</div>
+            <p class="plan-desc">
+              Для небольших компаний, бухгалтерий
+              и рабочих документов.
+            </p>
+
+            <div class="price">
+              4 900 ₽ <span>/ месяц</span>
+            </div>
+            <div class="setup">
+              Подключение: 5 000 ₽
+            </div>
+
+            <ul>
+              <li>До 500 ГБ исходных данных</li>
+              <li>Ежедневные резервные копии</li>
+              <li>30 дней истории</li>
+              <li>Мониторинг выполнения</li>
+              <li>Шифрование</li>
+              <li>Независимая внешняя копия</li>
+              <li>Восстановление файлов по запросу</li>
+            </ul>
+
+            <button class="btn btn-outline btn-block"
+                    data-plan="Backup Basic">
+              Выбрать Basic
+            </button>
+          </article>
+
+          <article class="plan featured">
+            <span class="plan-badge">Популярный</span>
+
+            <div class="plan-name">Backup Business</div>
+            <p class="plan-desc">
+              Для компаний с 1С, общими папками
+              и важными рабочими данными.
+            </p>
+
+            <div class="price">
+              11 900 ₽ <span>/ месяц</span>
+            </div>
+            <div class="setup">
+              Подключение: 12 000 ₽
+            </div>
+
+            <ul>
+              <li>До 2 ТБ исходных данных</li>
+              <li>Ежедневные инкрементальные копии</li>
+              <li>30 дней истории</li>
+              <li>Мониторинг и разбор ошибок</li>
+              <li>Шифрование данных</li>
+              <li>Независимая внешняя копия</li>
+              <li>Ежемесячный тест восстановления</li>
+              <li>Помощь с восстановлением</li>
+            </ul>
+
+            <button class="btn btn-primary btn-block"
+                    data-plan="Backup Business">
+              Выбрать Business
+            </button>
+          </article>
+
+          <article class="plan">
+            <div class="plan-name">Backup Server</div>
+            <p class="plan-desc">
+              Для виртуальных машин, NAS
+              и серверной инфраструктуры.
+            </p>
+
+            <div class="price">
+              24 900 ₽ <span>/ месяц</span>
+            </div>
+            <div class="setup">
+              Подключение: от 25 000 ₽
+            </div>
+
+            <ul>
+              <li>До 5 ТБ исходных данных</li>
+              <li>Резервирование VM, NAS и серверов</li>
+              <li>Инкрементальные копии</li>
+              <li>Мониторинг и шифрование</li>
+              <li>Независимая внешняя копия</li>
+              <li>Периодические тесты восстановления</li>
+              <li>Индивидуальные RPO и RTO</li>
+              <li>Согласованный порядок восстановления</li>
+            </ul>
+
+            <button class="btn btn-outline btn-block"
+                    data-plan="Backup Server">
+              Обсудить Server
+            </button>
+          </article>
+        </div>
+
+        <p class="pricing-note">
+          Цены ориентировочные. Итоговая стоимость зависит
+          от состава систем, объёма изменений, требований
+          к хранению и восстановлению. Условия закрепляются
+          в договоре.
+        </p>
+      </div>
+    </section>
+
+    <!-- ДЛЯ КОГО -->
+    <section class="section alt" id="solutions">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Решения</div>
+          <h2>Что можно защитить</h2>
+          <p>
+            Подбираем схему под ваши программы и оборудование,
+            а не заставляем перестраивать всю инфраструктуру.
+          </p>
+        </div>
+
+        <div class="use-cases">
+          <article class="use-case">
+            <div class="symbol">▦</div>
+            <h3>1С и бухгалтерия</h3>
+            <p>
+              Базы учёта, выгрузки, бухгалтерские
+              документы и рабочие файлы.
+            </p>
+          </article>
+
+          <article class="use-case">
+            <div class="symbol">▤</div>
+            <h3>Файловые серверы</h3>
+            <p>
+              Общие папки, документы, договоры,
+              таблицы и архивы.
+            </p>
+          </article>
+
+          <article class="use-case">
+            <div class="symbol">▥</div>
+            <h3>NAS-хранилища</h3>
+            <p>
+              Резервные копии сетевых хранилищ
+              и важных каталогов.
+            </p>
+          </article>
+
+          <article class="use-case">
+            <div class="symbol">▣</div>
+            <h3>Виртуальные машины</h3>
+            <p>
+              Серверы, виртуальные машины
+              и связанные с ними данные.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="container">
+        <div class="faq">
+          <div class="section-head">
+            <div class="eyebrow">Частые вопросы</div>
+            <h2>Что важно знать</h2>
+          </div>
+
+          <details>
+            <summary>Чем ваш сервис отличается от обычного облака?</summary>
+            <p>
+              Облачное хранилище предоставляет место для файлов.
+              Мы предлагаем управляемую услугу: настраиваем
+              резервирование, контролируем задания, реагируем
+              на ошибки и помогаем с восстановлением.
+            </p>
+          </details>
+
+          <details>
+            <summary>Можно ли восстановить случайно удалённый файл?</summary>
+            <p>
+              Да, если нужная версия сохранилась в пределах
+              срока хранения и копия доступна. Конкретный
+              порядок восстановления зависит от тарифа.
+            </p>
+          </details>
+
+          <details>
+            <summary>Где хранятся резервные копии?</summary>
+            <p>
+              Схема размещения согласуется при подключении.
+              Предусматриваем основное резервное хранилище
+              и независимую внешнюю копию. Конкретные площадки
+              и требования к размещению фиксируются в договоре.
+            </p>
+          </details>
+
+          <details>
+            <summary>Подойдёт ли это для базы 1С?</summary>
+            <p>
+              В большинстве типовых сценариев да. Способ
+              резервирования зависит от конфигурации 1С,
+              используемой СУБД и режима работы пользователей.
+              Сначала проверяем совместимость и возможность
+              корректного восстановления.
+            </p>
+          </details>
+
+          <details>
+            <summary>За сколько восстановите сервер?</summary>
+            <p>
+              Это зависит от объёма данных, скорости подключения,
+              состояния оборудования и выбранной схемы.
+              Для тарифа Backup Server целевые RPO и RTO
+              согласовываются отдельно.
+            </p>
+          </details>
+
+          <details>
+            <summary>Можно ли хранить персональные данные?</summary>
+            <p>
+              Такие проекты рассматриваются отдельно.
+              До подключения необходимо определить роли сторон,
+              место хранения, порядок доступа и меры защиты,
+              а также оформить необходимые документы
+              с учётом требований законодательства РФ.
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- КОНТАКТ -->
+    <section class="section alt" id="contact">
+      <div class="container contact-wrap">
+        <div>
+          <div class="eyebrow">Обсудим задачу</div>
+          <h2>
+            Узнайте, как защитить данные вашей компании
+          </h2>
+          <p class="lead">
+            Расскажите, что нужно копировать и сколько
+            места занимают данные. Поможем выбрать подходящий
+            тариф и оценить стоимость подключения.
+          </p>
+
+          <div class="hero-note">
+            <span>Без обязательств</span>
+            <span>Подбор под вашу систему</span>
+          </div>
+
+          <p style="margin-top:35px;font-size:14px;">
+            Контакты для связи:<br>
+            <strong style="color:var(--text)">
+              [Ваш email / Telegram / телефон]
+            </strong>
+          </p>
+        </div>
+
+        <div class="contact-box">
+          <h3>Оставить заявку</h3>
+          <p style="font-size:14px;">
+            Заполните несколько полей, чтобы подготовить
+            запрос на подключение.
+          </p>
+
+          <form id="lead-form">
+            <div class="field">
+              <label for="company">Ваше имя или компания *</label>
+              <input
+                id="company"
+                name="company"
+                type="text"
+                placeholder="Например, ООО Альфа"
+                autocomplete="organization"
+                required>
+            </div>
+
+            <div class="field">
+              <label for="contact-value">Как с вами связаться *</label>
+              <input
+                id="contact-value"
+                name="contact"
+                type="text"
+                placeholder="Email, телефон или Telegram"
+                required>
+            </div>
+
+            <div class="field">
+              <label for="plan-select">Интересующий тариф</label>
+              <select id="plan-select" name="plan">
+                <option>Нужна консультация</option>
+                <option>Backup Basic</option>
+                <option>Backup Business</option>
+                <option>Backup Server</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="volume">Примерный объём данных</label>
+              <select id="volume" name="volume">
+                <option>Пока не знаю</option>
+                <option>До 500 ГБ</option>
+                <option>500 ГБ – 2 ТБ</option>
+                <option>2–5 ТБ</option>
+                <option>Больше 5 ТБ</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="message">Что нужно копировать?</label>
+              <textarea
+                id="message"
+                name="message"
+                placeholder="Например: 1С, папки с документами и один Windows Server"></textarea>
+            </div>
+
+            <button type="submit"
+                    class="btn btn-primary btn-block">
+              Подготовить заявку →
+            </button>
+
+            <p class="form-note">
+              Форма не отправляет данные на сервер.
+              После настройки email она откроет почтовую
+              программу с готовым письмом. Не указывайте
+              пароли и конфиденциальные сведения.
+            </p>
+
+            <div id="form-status" role="status"
+                 aria-live="polite"></div>
+
+            <div id="preview-wrap" hidden>
+              <label for="request-preview">
+                Текст заявки для копирования
+              </label>
+              <textarea id="request-preview" readonly></textarea>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <div class="logo" style="margin-bottom:9px;">
+          <span class="logo-mark">↻</span>
+          Резерв.
+        </div>
+        <p>
+          Управляемое резервное копирование для бизнеса.
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <a href="#pricing">Тарифы</a>
+        <a href="#faq">Вопросы</a>
+        <a href="#contact">Контакты</a>
+      </div>
+
+      <p>
+        © <span id="year"></span> Резерв.<br>
+        Название и реквизиты нужно заменить перед запуском.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    /*
+      НАСТРОЙКА ПЕРЕД ПУБЛИКАЦИЕЙ
+
+      1. Замени название "Резерв." на своё.
+      2. Укажи настоящий email ниже.
+      3. Замени контакты в блоке "Обсудим задачу".
+      4. Добавь юридические реквизиты и документы.
+      5. Проверь тарифы и условия оказания услуг.
+
+      Форма работает через mailto.
+      Данные не передаются на сервер сайта.
+    */
+
+    const CONTACT_EMAIL = "hello@example.ru";
+
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+
+    // Выбор тарифа автоматически переносит к форме.
+    document.querySelectorAll("[data-plan]").forEach(button => {
+      button.addEventListener("click", () => {
+        const plan = button.getAttribute("data-plan");
+
+        document.getElementById("plan-select").value = plan;
+
+        document.getElementById("contact").scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      });
+    });
+
+    const form = document.getElementById("lead-form");
+    const status = document.getElementById("form-status");
+    const previewWrap = document.getElementById("preview-wrap");
+    const preview = document.getElementById("request-preview");
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+
+      if (!form.reportValidity()) return;
+
+      const company =
+        document.getElementById("company").value.trim();
+
+      const contact =
+        document.getElementById("contact-value").value.trim();
+
+      const plan =
+        document.getElementById("plan-select").value;
+
+      const volume =
+        document.getElementById("volume").value;
+
+      const message =
+        document.getElementById("message").value.trim();
+
+      const subject = "Заявка на резервное копирование: " + plan;
+
+      const body = [
+        "Здравствуйте!",
+        "",
+        "Хочу обсудить резервное копирование.",
+        "",
+        "Имя / компания: " + company,
+        "Контакт: " + contact,
+        "Тариф: " + plan,
+        "Объём данных: " + volume,
+        "Описание: " + (message || "Не указано"),
+        "",
+        "Отправлено со страницы услуги резервного копирования."
+      ].join("\n");
+
+      // Пока email не заменён, показываем текст заявки.
+      if (CONTACT_EMAIL === "shostakaboys@gmail.com") {
+        previewWrap.hidden = false;
+        preview.value = body;
+
+        status.textContent =
+          "Демо-режим: заявка сформирована. " +
+          "Скопируйте текст ниже. Для отправки укажите " +
+          "свой email в CONTACT_EMAIL.";
+
+        preview.focus();
+        preview.select();
+        return;
+      }
+
+      // Открывает почтовый клиент пользователя.
+      const mailto =
+        "mailto:" + CONTACT_EMAIL +
+        "?subject=" + encodeURIComponent(subject) +
+        "&body=" + encodeURIComponent(body);
+
+      status.textContent =
+        "Открываем почтовую программу. " +
+        "Проверьте письмо и нажмите «Отправить».";
+
+      window.location.href = mailto;
+    });
+  </script>
+</body>
+</html>
